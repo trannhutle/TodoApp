@@ -9,50 +9,7 @@
     <h1 class="title">
         Todo list application
     </h1>
-
     @await Component.InvokeAsync("TodoCategories", Model.ID)
-
-    <div class="todo-list">
-        <div class="todo-header">
-            <h2 class="list-title"> Youtube</h2>
-            <p class="tast-count">3 tasks remaining</p>                                                                  
-        </div>
-        <div class="todo-body">
-            <div class="tasks">
-                <div class="task">
-                    <input type="checkbox" id="task-1" />
-                    <label for="task-1">
-                        <span class="custom-checkbox"></span>
-                        The first task
-                    </label>
-                </div>
-                <div class="task">
-                    <input type="checkbox" id="task-2" />
-                    <label for="task-2">
-                        <span class="custom-checkbox"></span>
-                        The second task
-                    </label>
-                </div>
-                <div class="task">
-                    <input type="checkbox" id="task-3" />
-                    <label for="task-3">
-                        <span class="custom-checkbox"></span>
-                        The third task
-                    </label>
-                </div>
-            </div>
-            <div class="new-task-creator">
-                <form>
-                    <input type="text" class="new task" placeholder="new task name" aria-label="new task name" />
-                    <button class="btn create" arial-label="Create new task">+</button>
-                </form>
-            </div>
-            <div class="delete-stuff">
-                <button class="btn delete">Clear complete tasks</button>
-                <button class="btn delete">Delete list</button>
-            </div>
-
-        </div>
-    </div>
+    @await Component.InvokeAsync("TodoList", Model.ID)
 </div>
 

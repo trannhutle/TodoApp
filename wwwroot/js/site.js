@@ -6,6 +6,9 @@
 const addNewCat = document.querySelector("[data-add-new-todocat]")
 const newCatName = document.querySelector("[data-new-cat-name]")
 const todoCatList = document.querySelector("[data-todo-cat-list]")
+const addNewTodo = document.querySelector("[data-add-new-todo]")
+const newTodoTitle = document.querySelector("[data-new-todo-title]")
+
 const successCode = 200
 const TODO_CAT_ID_PREFIX = "todo-cat-id-"
 
@@ -30,7 +33,7 @@ addNewCat.addEventListener("click", e => {
         },
     }).done((result) => {
         const statusCode = result.statusCode;
-        if (statusCode === successCode) {                                                                   
+        if (statusCode === successCode) {
             newCatName.value = ""
             console.log("Call to back-end sucessfully")
             const newTodoCat = result.data
@@ -47,12 +50,35 @@ addNewCat.addEventListener("click", e => {
     })
 });
 
-//todoCatList.addEventListener("click", e => {
-//    if (e.target.tagname.toLowerCase() == "li") {
-//        e.target.dataset.listId = 
-//    }
-//})
+addNewTodo.addEventListener("click", e => {
+    e.preventDefault()
+    const todoTitle = newTodoTitle.value;
+    const curTodoCatId = newTodoTitle.dataset.curCatId
 
-//function reloadList() {
-//    todoCatList.
-//}
+    if (todoTitle == null || todoTitle === "") {
+        return
+    }
+    // Send the request to back-end
+    $.ajax({
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("XSRF-TOKEN",
+                $('input:hidden[name="__RequestVerificationToken"]').val());
+        },
+        method: "POST",
+        url: "/Index?handler=AddNewTodo",
+        data: {
+            "todoTitle": todoTitle,
+            "catId": curTodoCatId
+        },
+    }).done((result) => {
+        const statusCode = result.statusCode;
+        if (statusCode === successCode) {
+            newTodoTitle.value = ""
+            console.log("Call to back-end sucessfully")
+        } else {
+            alert("Could not add new todo category");
+        }
+    }).fail((result) => {
+        alert("Could not add new todo category");
+    })
+})

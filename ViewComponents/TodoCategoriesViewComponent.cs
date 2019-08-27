@@ -27,6 +27,5 @@ namespace TodoApplication.ViewComponents
             };
             return View(todoCatViewModel);
         }
-
     }
 }

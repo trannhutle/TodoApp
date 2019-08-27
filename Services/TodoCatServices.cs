@@ -8,10 +8,10 @@ using TodoApplication.Models;
 
 namespace TodoApplication.Services
 {
-    public class TodoCatService : ITodoCatServices
+    public class TodoCatServices : ITodoCatServices
     {
         private readonly TodoApplicationContext db;
-        public TodoCatService(TodoApplicationContext db) => this.db = db;
+        public TodoCatServices(TodoApplicationContext db) => this.db = db;
 
         public TodoCategory AddNewTodoCategory(TodoCategory todoCategory)
         {

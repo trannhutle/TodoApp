@@ -42,7 +42,8 @@ namespace TodoApplication
             // Add X-CSRF-TOKEN on Ajax request
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
             // Configure services
-            services.AddTransient<ITodoCatServices, TodoCatService>();
+            services.AddTransient<ITodoCatServices, TodoCatServices>();
+            services.AddTransient<ITodoListServices, TodoListServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

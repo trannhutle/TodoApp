@@ -16,9 +16,12 @@ namespace TodoApplication.Pages
     public class IndexModel : PageModel
     {
         private ITodoCatServices _todoCatServices;
-        public IndexModel(ITodoCatServices todoCatServices)
+        private ITodoListServices _todoListServices;
+
+        public IndexModel(ITodoCatServices todoCatServices, ITodoListServices todoListServices)
         {
             _todoCatServices = todoCatServices;
+            _todoListServices = todoListServices;
         }
 
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
@@ -54,6 +57,25 @@ namespace TodoApplication.Pages
             newCat.Name = catName;
             _todoCatServices.AddNewTodoCategory(newCat);
             return new JsonResult(new ResponseMessage(200, "Added successfully", newCat));
+        }
+
+        [HttpPost]
+        public IActionResult OnPostAddNewTodo()
+        {
+            //var catId = Int32.Parse(Request.Form["catId"]);
+            var catId = 2;
+            var todoTitle = Request.Form["todoTitle"];
+            var newTodo = new Todo
+            {
+                Title = todoTitle,
+                CatID = catId,
+                AssignmentDate = DateTime.Now.Ticks,
+                CreateDate = DateTime.Now.Ticks,
+                Content = "temp"
+            };
+            _todoListServices.AddNewTodo(newTodo);
+
+            return new JsonResult(new ResponseMessage(200, "Added successfully", newTodo));
         }
     }
 }
