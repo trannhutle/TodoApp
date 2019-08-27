@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using TodoApplication.Data;
+using TodoApplication.Services;
 
 namespace TodoApplication
 {
@@ -40,6 +41,8 @@ namespace TodoApplication
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             // Add X-CSRF-TOKEN on Ajax request
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+            // Configure services
+            services.AddTransient<ITodoCatServices, TodoCatService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,27 +9,45 @@ using TodoApplication.Models;
 using TodoApplication.Data;
 using TodoApplication.DataObjects;
 using System.IO;
+using TodoApplication.Services;
 
 namespace TodoApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        // Variable initialization
-
-        private readonly TodoApplicationContext db;
-        public IndexModel(TodoApplicationContext db) => this.db = db;
-        public List<Todo> Todos { get; set; } = new List<Todo>();
+        private ITodoCatServices _todoCatServices;
+        public IndexModel(ITodoCatServices todoCatServices) {
+            _todoCatServices = todoCatServices;
+        }
 
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
+
+        public int CurTodoCatId = -1; 
 
         // On page initialisation
         public async Task OnGetAsync()
         {
-            // Load default todo category and load todo detail list
-            this.Todos = await db.Todos.ToListAsync();
-            this.TodoCats = await db.TodoCategory.ToListAsync();
-        }
+            var id = Request.Query["id"];
 
+            if (String.IsNullOrEmpty(id))
+            {
+                this.CurTodoCatId = -1;
+            }
+            else
+            {
+                try
+                {
+                    this.CurTodoCatId = Int32.Parse(id);
+                }catch (Exception)
+                {
+                    this.CurTodoCatId = -1;
+                }
+            }
+            // Load default todo category and load todo detail list
+            //this.Todos = await db.Todos.ToListAsync();
+            this.TodoCats = await _todoCatServices.GetTodoCategoryListAsync();
+        }
+              
         [HttpPost]
         public IActionResult OnPostAddNewCategory()
         {
@@ -38,7 +56,7 @@ namespace TodoApplication.Pages
             {
                 return new JsonResult(new ResponseMessage(500, "Invalid inut", null));
             }
-
+            this.TodoCats = _todoCatServices.GetTodoCategoryList();
             // Check name dupplicate
             foreach (var cat in this.TodoCats)
             {
@@ -49,7 +67,7 @@ namespace TodoApplication.Pages
             }
             TodoCategory newCat = new TodoCategory();
             newCat.Name = catName;
-            this.db.Add(newCat);
+            _todoCatServices.AddNewTodoCategory(newCat);
             return new JsonResult(new ResponseMessage(200, "Added successfully", newCat));
         }
     }
