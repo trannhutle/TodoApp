@@ -2,79 +2,82 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
 }
+
 :root {
-    --clr-primary:rgb(54, 112, 199);
-    --clr-light:#f4f4f4;
-    --clr-dark:#333;
-    --clr-warning:rgb(99, 36,36);
+    --clr-primary: rgb(54, 112, 199);
+    --clr-light: #f4f4f4;
+    --clr-dark: #333;
+    --clr-warning: rgb(99, 36,36);
 }
 /* Custom css*/
 body {
     background-color: var(--clr-primary);
 }
+
 .wrapper {
     margin: 0;
     font-weight: 300;
     font-size: 1.5rem;
     color: var(--clr-light);
-
     display: grid;
-    grid:"header header header header" auto
-         "...... lists active ......" auto / 
-         0 minmax(100px, 300px) minmax(250px, 500px) 0
+    grid: "header header header header" auto "...... lists active ......" auto / 0 minmax(100px, 300px) minmax(250px, 500px) 0
 }
+
 .title {
     grid-area: header;
     text-align: center;
@@ -82,23 +85,28 @@ body {
     font-weight: 900;
     color: black;
     letter-spacing: 2px
-
 }
-
 
 .task-list {
     font-size: 1.2rem;
     line-height: 1.7;
     list-style: circle;
-    
 }
 
 .list-name {
     cursor: pointer;
+    color: inherit;
 }
 
 .list-name:hover {
     opacity: .7;
+    color: inherit;
+    text-decoration-line: none;
+}
+
+.active-list {
+    font-weight: 700;
+    color: inherit;
 }
 
 form {
@@ -113,16 +121,17 @@ form {
     color: inherit;
     font-size: 1rem;
 }
-.btn.create {
-    font-size: 1.5rem;
-    font-weight: 900;
-    margin-right: 0.25rem;
-    transition: opacity 250ms ease-in;
-}
 
-.btn.list:hover {
-    opacity: 0.7
-}
+    .btn.create {
+        font-size: 1.5rem;
+        font-weight: 900;
+        margin-right: 0.25rem;
+        transition: opacity 250ms ease-in;
+    }
+
+    .btn.list:hover {
+        opacity: 0.7
+    }
 
 btn.delete {
     font-size: 1.0rem;
@@ -145,27 +154,26 @@ btn.delete {
     order: 2;
 }
 
-.new::placeholder {
-    opacity: 0.4;
-    color: inherit;
-}
+    .new::placeholder {
+        opacity: 0.4;
+        color: inherit;
+    }
 
-.new:focus {
-    border-bottom-width: 3px;
-}
-.new:focus::placeholder{
-    opacity: 0.15;
-}
-.new.list {
-    font-size: 1.1rem;
-}
-.new.task {
-    margin-bottom: 0;
-}
+    .new:focus {
+        border-bottom-width: 3px;
+    }
 
-.active-list {
-    font-weight: 700
-}
+        .new:focus::placeholder {
+            opacity: 0.15;
+        }
+
+    .new.list {
+        font-size: 1.1rem;
+    }
+
+    .new.task {
+        margin-bottom: 0;
+    }
 
 .all-tasks {
     grid-area: lists;
@@ -173,7 +181,6 @@ btn.delete {
 
 .todo-list {
     --spacer: 2rem;
-
     grid-area: active;
     background: var(--clr-light);
     color: var(--clr-dark);
@@ -181,7 +188,7 @@ btn.delete {
 
 .todo-header {
     padding: var(--spacer);
-    background:#e4e4e4;
+    background: #e4e4e4;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -190,6 +197,7 @@ btn.delete {
 .list-title {
     margin: 0 1rem 0 0;
 }
+
 .list-count {
     margin: 0;
     font-size: 1rem;
@@ -209,26 +217,28 @@ btn.delete {
     opacity: 0;
     position: absolute
 }
+
 .task label {
     display: inline-flex;
     align-items: center;
     position: relative;
 }
+
 .task {
     position: relative;
     margin-bottom: 1.25em;
 }
 
-.task::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    height: 1px;
-    background: currentColor;
-    opacity: 0.1;
-}
+    .task::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.1;
+    }
 
 .custom-checkbox {
     --size: 0.75em;
@@ -243,8 +253,8 @@ btn.delete {
     transition: transform 300ms ease-in-out
 }
 
-.task:hover .custom-checkbox, 
-[type="checkbox"]:focus + label .custom-checkbox{
+.task:hover .custom-checkbox,
+[type="checkbox"]:focus + label .custom-checkbox {
     transform: scale(1.2);
     color: var(--clr-primary);
 }
@@ -271,6 +281,7 @@ btn.delete {
     transform-origin: left;
     transition: transform 200ms ease-in-out
 }
+
 [type="checkbox"]:checked + label::after {
     transform: scaleX(1);
     transform-origin: left;
@@ -285,4 +296,3 @@ btn.delete {
     bottom: -30px;
     color: var(--clr-light);
 }
-

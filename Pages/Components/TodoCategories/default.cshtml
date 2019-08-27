@@ -1,0 +1,22 @@
+﻿@model TodoApplication.ViewModels.TodoCatViewModel
+<div class="all-tasks">
+    <h2 class="task-list-title">My list</h2>
+    <ul class="task-list" data-todo-cat-list>
+        @foreach (var cat in Model.TodoCatList)
+        {
+            if (cat.ID == Model.SelectedIndex)
+            {
+                <li><a class="active-list" asp-page="/Index" asp-route-id="@cat.ID">@cat.Name</a></li>
+            }
+            else
+            {
+                <li><a class="list-name" asp-page="/Index" asp-route-id="@cat.ID">@cat.Name</a></li>
+            }
+        }
+
+    </ul>
+    <form method="post">
+        <input type="text" class="new list" placeholder="new list name" aria-label="new list name" data-new-cat-name />
+        <button class="btn create" arial-label="Create new list" data-add-new-todocat>+</button>
+    </form>
+</div>

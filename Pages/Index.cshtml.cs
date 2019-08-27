@@ -16,38 +16,23 @@ namespace TodoApplication.Pages
     public class IndexModel : PageModel
     {
         private ITodoCatServices _todoCatServices;
-        public IndexModel(ITodoCatServices todoCatServices) {
+        public IndexModel(ITodoCatServices todoCatServices)
+        {
             _todoCatServices = todoCatServices;
         }
 
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
 
-        public int CurTodoCatId = -1; 
+        public int ID { get; set; } = 0;
 
         // On page initialisation
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int id)
         {
-            var id = Request.Query["id"];
-
-            if (String.IsNullOrEmpty(id))
-            {
-                this.CurTodoCatId = -1;
-            }
-            else
-            {
-                try
-                {
-                    this.CurTodoCatId = Int32.Parse(id);
-                }catch (Exception)
-                {
-                    this.CurTodoCatId = -1;
-                }
-            }
-            // Load default todo category and load todo detail list
-            //this.Todos = await db.Todos.ToListAsync();
+            //var id = Request.Query["id"];
+            this.ID = id;
             this.TodoCats = await _todoCatServices.GetTodoCategoryListAsync();
         }
-              
+
         [HttpPost]
         public IActionResult OnPostAddNewCategory()
         {
