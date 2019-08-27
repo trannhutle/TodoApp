@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TodoApplication.Models;
+using TodoApplication.Data;
 
 namespace TodoApplication.Data.Migrations
 {
@@ -22,7 +22,7 @@ namespace TodoApplication.Data.Migrations
 
                     b.Property<long>("AssignmentDate");
 
-                    b.Property<string>("Category");
+                    b.Property<int>("CatID");
 
                     b.Property<string>("Content");
 
@@ -34,6 +34,36 @@ namespace TodoApplication.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Todos");
+                });
+
+            modelBuilder.Entity("TodoApplication.Models.TodoCategory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("ID");
+
+                    b.ToTable("TodoCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Name = "Work"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Name = "Home"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Name = "Personal"
+                        });
                 });
 #pragma warning restore 612, 618
         }

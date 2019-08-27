@@ -11,18 +11,28 @@
     </h1>
     <div class="all-tasks">
         <h2 class="task-list-title">My list</h2>
-        <ul class="task-list">
-            <li class="active-list">Daily</li>
-            <li class="list-name">Work</li>
-            <li class="list-name">Home</li>
-        </ul>
-        <form>
-            <input type="text" class="new list" placeholder="new list name" aria-label="new list name" />
+        @* Display todo categories *@
+    <ul class="task-list">
+        @{int i = 0;}
+        @foreach (var cat in Model.TodoCats)
+        {
+            if (i == 0)
+            {
+                <li class="active-list">@cat.Name</li>
+            }
+            else
+            {
+                <li class="list-name">@cat.Name</li>
+            }
+            i++;
+        }
+    </ul>
+        <form method="post" data-add-new-todocat>
+            <input type="text" class="new list" placeholder="new list name" aria-label="new list name" data-new-cat-name/>
             <button class="btn create" arial-label="Create new list">+</button>
         </form>
     </div>
     <div class="todo-list">
-
         <div class="todo-header">
             <h2 class="list-title"> Youtube</h2>
             <p class="tast-count">3 tasks remaining</p>

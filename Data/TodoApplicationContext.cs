@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TodoApplication.Data.Configurations;
 
-namespace TodoApplication.Models
+namespace TodoApplication.Data
 {
     public class TodoApplicationContext : DbContext
     {
-        public DbSet<TodoApplication.Models.Todo> Todos { get; set; }
+        public DbSet<Models.Todo> Todos { get; set; }
+        public DbSet<Models.TodoCategory> TodoCategory { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -15,6 +16,7 @@ namespace TodoApplication.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new TodoConfiguration());
+            modelBuilder.Seed();
         }
     }   
 }

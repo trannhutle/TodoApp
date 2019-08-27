@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using TodoApplication.Models;
+using TodoApplication.Data;
 
 namespace TodoApplication
 {
@@ -34,8 +34,12 @@ namespace TodoApplication
             });
             // Add dbContext on start up
             var addDbContext = services.AddDbContext<TodoApplicationContext>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.AllowMappingHeadRequestsToGetHandler = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // Add X-CSRF-TOKEN on Ajax request
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
