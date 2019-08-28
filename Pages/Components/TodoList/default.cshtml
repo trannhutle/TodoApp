@@ -1,40 +1,27 @@
-﻿@model List<TodoApplication.Models.Todo>
+﻿@model TodoApplication.ViewModels.TodoListViewModel
 <div class="todo-list">
     <div class="todo-header">
-        <h2 class="list-title"> Youtube</h2>
-        <p class="tast-count">3 tasks remaining</p>
+        <h2 class="list-title">@Model.TodoCatName</h2>
+        <p class="tast-count">@Model.TodoList.Count()</p>
     </div>
     <div class="todo-body">
-        <div class="tasks">
-            @foreach (var item in Model)
+        <div class="tasks" data-todo-list-container>
+            @foreach (var item in Model.TodoList)
             {
                 <div class="task">
                     <input type="checkbox" id="task-1" />
                     <label for="task-1">
                         <span class="custom-checkbox"></span>
-                        @item.Title
+                        @item.Name
                     </label>
                 </div>
             }
-
-            @*<div class="task">
-                    <input type="checkbox" id="task-2" />
-                    <label for="task-2">
-                        <span class="custom-checkbox"></span>
-                        The second task
-                    </label>
-                </div>
-                <div class="task">
-                    <input type="checkbox" id="task-3" />
-                    <label for="task-3">
-                        <span class="custom-checkbox"></span>
-                        The third task
-                    </label>
-                </div>*@
+            
         </div>
         <div class="new-task-creator">
             <form method="post">
-                <input type="text" class="new task" placeholder="new task name" aria-label="new task name" data-new-todo-title  data-cur-cat-id="2">
+                <input type="text" class="new task" placeholder="new task name"
+                       aria-label="new task name" data-new-todo-name data-cur-cat-id="@Model.TodoCatId">
                 <button class="btn create" arial-label="Create new task" data-add-new-todo>+</button>
             </form>
         </div>
@@ -42,6 +29,13 @@
             <button class="btn delete">Clear complete tasks</button>
             <button class="btn delete">Delete list</button>
         </div>
-
+        <template id="todo-template">
+            <div class="task">
+                <input type="checkbox" />
+                <label>
+                    <span class="custom-checkbox"></span>
+                </label>
+            </div>
+        </template>
     </div>
 </div>

@@ -7,7 +7,9 @@ const addNewCat = document.querySelector("[data-add-new-todocat]")
 const newCatName = document.querySelector("[data-new-cat-name]")
 const todoCatList = document.querySelector("[data-todo-cat-list]")
 const addNewTodo = document.querySelector("[data-add-new-todo]")
-const newTodoTitle = document.querySelector("[data-new-todo-title]")
+const newTodoName = document.querySelector("[data-new-todo-name]")
+const todoTemplate = document.getElementById("todo-template")
+const todoListContainer = document.querySelector("[data-todo-list-container]")
 
 const successCode = 200
 const TODO_CAT_ID_PREFIX = "todo-cat-id-"
@@ -15,11 +17,30 @@ const TODO_CAT_ID_PREFIX = "todo-cat-id-"
 addNewCat.addEventListener("click", e => {
     e.preventDefault();
     const catName = newCatName.value;
-
-    // Check if input data is null
     if (catName == null || catName === "") {
         return
     }
+    addTodoCategory(catName)
+});
+
+addNewTodo.addEventListener("click", e => {
+    e.preventDefault()
+    const todoName = newTodoName.value;
+    const curTodoCatId = newTodoName.dataset.curCatId
+    if (todoName == null || todoName === "") {
+        return
+    }
+    addTodo(todoName, curTodoCatId)
+    
+})
+
+// reset input boxes
+function clearInput() {
+    newTodoName.value = ""
+    newCatName.value = ""
+}
+
+function addTodoCategory(name) {
     // Send the request to back-end
     $.ajax({
         beforeSend: function (xhr) {
@@ -29,35 +50,23 @@ addNewCat.addEventListener("click", e => {
         method: "POST",
         url: "/Index?handler=AddNewCategory",
         data: {
-            "catName": catName
+            "catName": name
         },
     }).done((result) => {
         const statusCode = result.statusCode;
         if (statusCode === successCode) {
-            newCatName.value = ""
-            console.log("Call to back-end sucessfully")
+            clearInput()
             const newTodoCat = result.data
-            const newTodoCatElement = document.createElement("li")
-            newTodoCatElement.dataset.listId = TODO_CAT_ID_PREFIX + newTodoCat.id
-            newTodoCatElement.classList.add("list-name")
-            newTodoCatElement.innerText = newTodoCat.name
-            todoCatList.appendChild(newTodoCatElement)
+            renderTodoCatList(newTodoCat)
         } else {
             alert("Could not add new todo category");
         }
     }).fail((result) => {
         alert("Could not add new todo category");
     })
-});
+}
 
-addNewTodo.addEventListener("click", e => {
-    e.preventDefault()
-    const todoTitle = newTodoTitle.value;
-    const curTodoCatId = newTodoTitle.dataset.curCatId
-
-    if (todoTitle == null || todoTitle === "") {
-        return
-    }
+function addTodo(name, todoCatId) {
     // Send the request to back-end
     $.ajax({
         beforeSend: function (xhr) {
@@ -67,18 +76,67 @@ addNewTodo.addEventListener("click", e => {
         method: "POST",
         url: "/Index?handler=AddNewTodo",
         data: {
-            "todoTitle": todoTitle,
-            "catId": curTodoCatId
+            "todoName": name,
+            "catId": todoCatId
         },
     }).done((result) => {
         const statusCode = result.statusCode;
         if (statusCode === successCode) {
-            newTodoTitle.value = ""
-            console.log("Call to back-end sucessfully")
+            clearInput()
+            //Get new todo list
+            getTodoList(curTodoCatId)
         } else {
             alert("Could not add new todo category");
         }
     }).fail((result) => {
         alert("Could not add new todo category");
     })
-})
+}
+
+// Get to do list of todo category
+function getTodoList(todoCatId) {
+    $.ajax({
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("XSRF-TOKEN",
+                $('input:hidden[name="__RequestVerificationToken"]').val());
+        },
+        method: "GET",
+        url: "/Index?handler=TodoList",
+        data: {
+            "catId": todoCatId
+        },
+    }).done((result) => {
+        const statusCode = result.statusCode;
+        
+        if (statusCode === successCode) {
+            const todoList = result.data
+            renderTodoList(todoList)
+        } else {
+            alert("Could not add new todo category");
+        }
+    }).fail((result) => {
+        alert("Could not add new todo category");
+    })
+}
+
+// Render todo list to html template
+function renderTodoList(todoList) {
+    todoList.forEach(todo => {
+        const todoElement = document.importNode(todoTemplate.content, true)
+        const checkBox = todoElement.querySelector("input")
+        checkBox.id = todo.id;
+        checkBox.checked = todo.complete;
+        const label = todoElement.querySelector("label")
+        label.htmlFor = todo.id
+        label.append(todo.name)
+        todoListContainer.appendChild(todoElement)
+    })
+}
+
+function renderTodoCatList(todoCat) {
+    const newTodoCatElement = document.createElement("li")
+    newTodoCatElement.dataset.listId = TODO_CAT_ID_PREFIX + todoCat.id
+    newTodoCatElement.classList.add("list-name")
+    newTodoCatElement.innerText = todoCat.name
+    todoCatList.appendChild(newTodoCatElement)
+}

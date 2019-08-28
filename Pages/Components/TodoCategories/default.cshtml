@@ -4,7 +4,7 @@
     <ul class="task-list" data-todo-cat-list>
         @foreach (var cat in Model.TodoCatList)
         {
-            if (cat.ID == Model.SelectedIndex)
+            if (cat.ID == Model.SelectedCatId)
             {
                 <li><a class="active-list" asp-page="/Index" asp-route-id="@cat.ID">@cat.Name</a></li>
             }

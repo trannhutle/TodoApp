@@ -20,6 +20,11 @@ namespace TodoApplication.Services
             return todoCategory;
         }
 
+        public TodoCategory FindById(int id)
+        {
+            return db.TodoCategory.Find(id);
+        }
+        
         public List<TodoCategory> GetTodoCategoryList()
         {
             var todoCatList = db.TodoCategory.ToList();

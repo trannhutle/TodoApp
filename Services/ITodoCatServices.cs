@@ -11,5 +11,6 @@ namespace TodoApplication.Services
         Task<List<TodoCategory>> GetTodoCategoryListAsync();
         List<TodoCategory> GetTodoCategoryList();
         TodoCategory AddNewTodoCategory(TodoCategory todoCategory);
+        TodoCategory FindById(int id);
     }
 }

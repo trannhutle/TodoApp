@@ -20,16 +20,16 @@ namespace TodoApplication.Data.Migrations
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("AssignmentDate");
-
                     b.Property<int>("CatID");
 
-                    b.Property<string>("Content");
+                    b.Property<bool>("Complete");
 
                     b.Property<long>("CreateDate")
                         .HasColumnName("CreateDate");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Name");
+
+                    b.Property<long>("UpdateDate");
 
                     b.HasKey("ID");
 
@@ -40,6 +40,8 @@ namespace TodoApplication.Data.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CreatedDay");
 
                     b.Property<string>("Name")
                         .IsRequired();
@@ -52,16 +54,19 @@ namespace TodoApplication.Data.Migrations
                         new
                         {
                             ID = 1,
+                            CreatedDay = 0L,
                             Name = "Work"
                         },
                         new
                         {
                             ID = 2,
+                            CreatedDay = 0L,
                             Name = "Home"
                         },
                         new
                         {
                             ID = 3,
+                            CreatedDay = 0L,
                             Name = "Personal"
                         });
                 });

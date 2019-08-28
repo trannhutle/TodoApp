@@ -10,18 +10,22 @@ using TodoApplication.Data;
 using TodoApplication.DataObjects;
 using System.IO;
 using TodoApplication.Services;
+using Microsoft.Extensions.Logging;
 
 namespace TodoApplication.Pages
 {
     public class IndexModel : PageModel
     {
-        private ITodoCatServices _todoCatServices;
-        private ITodoListServices _todoListServices;
+        private readonly ITodoCatServices _todoCatServices;
+        private readonly ITodoListServices _todoListServices;
+        private readonly ILogger _logger;
 
-        public IndexModel(ITodoCatServices todoCatServices, ITodoListServices todoListServices)
+        public IndexModel(ITodoCatServices todoCatServices, ITodoListServices todoListServices,
+            ILogger<IndexModel> logger)
         {
             _todoCatServices = todoCatServices;
             _todoListServices = todoListServices;
+            _logger = logger;
         }
 
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
@@ -29,11 +33,40 @@ namespace TodoApplication.Pages
         public int ID { get; set; } = 0;
 
         // On page initialisation
-        public async Task OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync()
         {
-            //var id = Request.Query["id"];
-            this.ID = id;
+            var catIdStr = Request.Query["id"];
+            var id = ParseTodoCatId(catIdStr);
+
             this.TodoCats = await _todoCatServices.GetTodoCategoryListAsync();
+            // The the first item on the list
+            if (id == 0 && this.TodoCats.Count > 0)
+            {
+                this.ID = this.TodoCats[1].ID;
+            }
+            else if (id > 0)
+            {
+                var curCat = _todoCatServices.FindById(id);
+                if (curCat == null)
+                {
+                    return RedirectToPage("./Error");
+                }
+                this.ID = curCat.ID;
+            }
+            else if (this.TodoCats.Count == 0)
+            {
+                return RedirectToPage("./Error");
+            }
+            return Page();
+        }
+
+        public IActionResult OnGetTodoList()
+        {
+            var catIdStr = Request.Query["catId"];
+            var id = ParseTodoCatId(catIdStr);
+            var todoList = _todoListServices.GetTodoList(id);
+            // The the first item on the list
+            return new JsonResult(new ResponseMessage(200, "Get todo list successfully", todoList));
         }
 
         [HttpPost]
@@ -62,20 +95,54 @@ namespace TodoApplication.Pages
         [HttpPost]
         public IActionResult OnPostAddNewTodo()
         {
-            //var catId = Int32.Parse(Request.Form["catId"]);
-            var catId = 2;
-            var todoTitle = Request.Form["todoTitle"];
+            var catId = Request.Form["catId"];
+            var todoName = Request.Form["todoName"];
+            // Valid input 
+            if (!IsAddNewTodoValid(catId, todoName))
+            {
+                return new JsonResult(new ResponseMessage(500, "Input Error", null));
+            }
             var newTodo = new Todo
             {
-                Title = todoTitle,
-                CatID = catId,
-                AssignmentDate = DateTime.Now.Ticks,
+                Name = todoName,
+                CatID = Int32.Parse(catId),
+                UpdateDate = DateTime.Now.Ticks,
                 CreateDate = DateTime.Now.Ticks,
-                Content = "temp"
             };
             _todoListServices.AddNewTodo(newTodo);
-
             return new JsonResult(new ResponseMessage(200, "Added successfully", newTodo));
+        }
+
+
+        private int ParseTodoCatId(string catId)
+        {
+            var id = 0;
+            try
+            {
+                id = Int32.Parse(catId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Parse Error");
+            }
+            return id;
+        }
+        private bool IsAddNewTodoValid(string catId, string name)
+        {
+            try
+            {
+                var id = Int32.Parse(catId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Parse Todo list id Error");
+                return false;
+            }
+            if (String.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

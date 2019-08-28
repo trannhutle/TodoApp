@@ -2,7 +2,7 @@
 
 namespace TodoApplication.Data.Migrations
 {
-    public partial class CrateDatabase : Migration
+    public partial class CreateDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,8 @@ namespace TodoApplication.Data.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    CreatedDay = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,9 +27,9 @@ namespace TodoApplication.Data.Migrations
                     ID = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CatID = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    AssignmentDate = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Complete = table.Column<bool>(nullable: false),
+                    UpdateDate = table.Column<long>(nullable: false),
                     CreateDate = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -38,18 +39,18 @@ namespace TodoApplication.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "TodoCategory",
-                columns: new[] { "ID", "Name" },
-                values: new object[] { 1, "Work" });
+                columns: new[] { "ID", "CreatedDay", "Name" },
+                values: new object[] { 1, 0L, "Work" });
 
             migrationBuilder.InsertData(
                 table: "TodoCategory",
-                columns: new[] { "ID", "Name" },
-                values: new object[] { 2, "Home" });
+                columns: new[] { "ID", "CreatedDay", "Name" },
+                values: new object[] { 2, 0L, "Home" });
 
             migrationBuilder.InsertData(
                 table: "TodoCategory",
-                columns: new[] { "ID", "Name" },
-                values: new object[] { 3, "Personal" });
+                columns: new[] { "ID", "CreatedDay", "Name" },
+                values: new object[] { 3, 0L, "Personal" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

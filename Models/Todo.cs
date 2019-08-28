@@ -12,11 +12,11 @@ namespace TodoApplication.Models
 
         public int CatID { get; set; }
 
-        public string Title { get; set; }
+        public string Name { get; set; }
 
-        public string Content { get; set;}
+        public bool Complete { get; set; } = false;
 
-        public long AssignmentDate { get; set; }
+        public long UpdateDate { get; set; }
 
         public long CreateDate { get; set; }
     }

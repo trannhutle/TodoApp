@@ -7,9 +7,12 @@ namespace TodoApplication.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set;}
+        public int ID { get; set; }
 
         [Required]
         public string Name { get; set; }
+
+        public long CreatedDay { get; set; }
+
     }
 }

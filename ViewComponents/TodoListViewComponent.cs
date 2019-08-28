@@ -4,21 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoApplication.Services;
+using TodoApplication.ViewModels;
 
 namespace TodoApplication.ViewComponents
 {
-    public class TodoListViewComponent:ViewComponent
+    public class TodoListViewComponent : ViewComponent
     {
-        private ITodoListServices _iTodoListServices = null;
-        public TodoListViewComponent(ITodoListServices todoListServices)
+        private ITodoListServices _todoListServices = null;
+        private ITodoCatServices _todoCatServices = null;
+
+        public TodoListViewComponent(ITodoListServices todoListServices, ITodoCatServices todoCatServices)
         {
-            _iTodoListServices = todoListServices;
+            _todoListServices = todoListServices;
+            _todoCatServices = todoCatServices;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int selectedCatId)
         {
-            var todoList = await _iTodoListServices.GetTodoListAsync(selectedCatId);
-            return View(todoList);
+            var todoList = await _todoListServices.GetTodoListAsync(selectedCatId);
+            var todoCat = _todoCatServices.FindById(selectedCatId);
+            var todoCatName = "";
+            if (todoCat != null)
+            {
+                todoCatName = todoCat.Name;
+            }
+            return View(new TodoListViewModel { TodoCatId = selectedCatId, TodoCatName = todoCatName, TodoList = todoList });
+
         }
     }
 }

@@ -6,6 +6,6 @@ namespace TodoApplication.ViewModels
     public class TodoCatViewModel
     {
         public List<TodoCategory> TodoCatList { get; set; }
-        public int SelectedIndex { get; set; }
+        public int SelectedCatId { get; set; }
     }
 }

@@ -26,7 +26,8 @@ namespace TodoApplication.Services
 
         public List<Todo> GetTodoList(int selectedCatId)
         {
-            throw new NotImplementedException();
+            var todoList = this.db.Todos.Where(x => x.CatID == selectedCatId).ToList();
+            return todoList;
         }
 
         public async Task<List<Todo>> GetTodoListAsync(int selectedCatId)

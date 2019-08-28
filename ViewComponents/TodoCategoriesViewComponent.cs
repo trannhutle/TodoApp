@@ -17,12 +17,12 @@ namespace TodoApplication.ViewComponents
             _todoCatServices = todoCatServices;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int selectedIndex)
+        public async Task<IViewComponentResult> InvokeAsync(int selectedCatId)
         {
             var todoCatList = await _todoCatServices.GetTodoCategoryListAsync();
             var todoCatViewModel = new TodoCatViewModel
             {
-                SelectedIndex = selectedIndex,
+                SelectedCatId = selectedCatId,
                 TodoCatList = todoCatList
             };
             return View(todoCatViewModel);
