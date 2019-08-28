@@ -9,7 +9,8 @@ namespace TodoApplication.ViewModels
     public class TodoListViewModel
     {
         public List<Todo> TodoList { get; set; }
-        public int  TodoCatId{ get; set; }
-        public string  TodoCatName{ get; set; }
+        public int TodoCatId { get; set; }
+        public int RemainingTasks { get; set; }
+        public string TodoCatName { get; set; }
     }
 }

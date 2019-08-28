@@ -12,5 +12,6 @@ namespace TodoApplication.Services
         List<TodoCategory> GetTodoCategoryList();
         TodoCategory AddNewTodoCategory(TodoCategory todoCategory);
         TodoCategory FindById(int id);
+        void DeleteById(int id);
     }
 }

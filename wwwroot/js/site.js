@@ -11,6 +11,8 @@ const newTodoName = document.querySelector("[data-new-todo-name]")
 const todoTemplate = document.getElementById("todo-template")
 const todoListContainer = document.querySelector("[data-todo-list-container]")
 const remainingTodo = document.querySelector("[data-remaining-todo]")
+const deleteStuffTemplate = document.getElementById("delete-stuff-template")
+const deleteStuffContainer = document.querySelector("[data-delete-stuff]")
 
 const successCode = 200
 const TODO_CAT_ID_PREFIX = "todo-cat-id-"
@@ -40,6 +42,7 @@ addNewTodo.addEventListener("click", e => {
 newTodoName.addEventListener("keypress", e => {
     const code = (e.keyCode ? e.keyCode : e.which);
     if (code == 13) {
+        e.preventDefault()
         addNewTodo.click()
     }
 })
@@ -117,8 +120,14 @@ function addTodo() {
         const statusCode = result.statusCode;
         if (statusCode === successCode) {
             clearInput()
+
             //Get new todo list
-            getTodoList()
+            getTodoList(result => {
+                clearElement(todoListContainer)
+                updateRemainingTodo(result)
+                renderTodoList(result)
+                addDeleteStuff(result)
+            })
         } else {
             alert("Could not add new todo category");
         }
@@ -127,6 +136,7 @@ function addTodo() {
     })
 }
 
+// Update todo status
 function updateTodo(todoId, complete) {
 
     const t = { ID: parseInt(todoId), Complete: complete }
@@ -143,7 +153,10 @@ function updateTodo(todoId, complete) {
     }).done((result) => {
         const statusCode = result.statusCode;
         if (statusCode === successCode) {
-            console.log("update successfully")
+            // Refresh the list
+            getTodoList(result => {
+                updateRemainingTodo(result)
+            })
         } else {
             alert("Could not add new todo category");
         }
@@ -153,7 +166,7 @@ function updateTodo(todoId, complete) {
 }
 
 // Get to do list of todo category
-function getTodoList() {
+function getTodoList(callback) {
     const catId = newTodoName.dataset.curCatId
     $.ajax({
         beforeSend: function (xhr) {
@@ -170,9 +183,7 @@ function getTodoList() {
 
         if (statusCode === successCode) {
             const todoList = result.data
-            clearElement(todoListContainer)
-            updateRemainingTodo(todoList)
-            renderTodoList(todoList)
+            callback(todoList)
         } else {
             alert("Could not add new todo category");
         }
@@ -180,7 +191,6 @@ function getTodoList() {
         alert("Could not add new todo category");
     })
 }
-
 // Render todo list to html template
 function renderTodoList(todoList) {
     todoList.forEach(todo => {
@@ -195,6 +205,15 @@ function renderTodoList(todoList) {
     })
 }
 
+function addDeleteStuff(todoList) {
+    if (todoList && todoList.length > 0) {
+        const deleteStuffElement = document.importNode(deleteStuffTemplate.content, true);
+        clearElement(deleteStuffContainer)
+        deleteStuffContainer.appendChild(deleteStuffElement);
+    }
+}
+
+// Render toto category to html template
 function renderTodoCatList(todoCat) {
     const newTodoCatElement = document.createElement("li")
     newTodoCatElement.dataset.listId = TODO_CAT_ID_PREFIX + todoCat.id
@@ -203,14 +222,27 @@ function renderTodoCatList(todoCat) {
     todoCatList.appendChild(newTodoCatElement)
 }
 
+// Update remaining todo list number
 function updateRemainingTodo(todoList) {
     if (todoList && todoList.length > 0) {
-        remainingTodo.innerText = REMAINING_TEXT + " " + todoList.length
+        var count = 0
+        todoList.forEach(i => {
+            if (i.complete) {
+                count++
+            }
+        })
+        const remain = todoList.length - count
+        if (count > 0) {
+            remainingTodo.innerText = REMAINING_TEXT + " " + remain
+        } else {
+            remainingTodo.innerText = ""
+        }
     } else {
         remainingTodo.innerText = ""
     }
 }
 
+// Clear unused elements
 function clearElement(element) {
     while (element.firstChild) {
         element.removeChild(element.firstChild)

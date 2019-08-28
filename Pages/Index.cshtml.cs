@@ -26,13 +26,16 @@ namespace TodoApplication.Pages
         {
             _todoCatServices = todoCatServices;
             _todoListServices = todoListServices;
-             _logger = logger;
+            _logger = logger;
         }
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
 
         public int ID { get; set; } = 0;
 
-        // On page initialisation
+        /// <summary>
+        /// Handle load index page
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnGetAsync()
         {
             var catIdStr = Request.Query["id"];
@@ -60,23 +63,44 @@ namespace TodoApplication.Pages
             return Page();
         }
 
+        /// <summary>
+        /// Handle  3 delete methods: remove done todos, remove all todos of todo category and remove the todo category
+        /// </summary>
+        /// <param name="todoList"></param>
+        /// <param name="removeDone"></param>
+        /// <param name="removeAllTodoList"></param>
+        /// <param name="removeList"></param>
+        /// <param name="todoCatId"></param>
+        /// <returns></returns>
         [HttpPost]
-        public IActionResult OnPostDeleteTodo(TodoViewModel todoList, string removeDone, string removeList)
+        public IActionResult OnPostDeleteTodo(TodoViewModel todoList, string removeDone,
+            string removeAllTodoList, string removeList, int todoCatId)
+
         {
             if (!string.IsNullOrEmpty(removeDone))
             {
                 if (todoList != null && todoList.SelectedTodos != null)
                 {
-                    removeDoneTodos(todoList.SelectedTodos);
+                    RemoveDoneTodos(todoList.SelectedTodos);
                 }
+            }
+            else if (!string.IsNullOrEmpty(removeAllTodoList))
+            {
+                _todoListServices.DeleteTodoByCatId(todoCatId);
             }
             else if (!string.IsNullOrEmpty(removeList))
             {
-
+                _todoListServices.DeleteTodoByCatId(todoCatId);
+                _todoCatServices.DeleteById(todoCatId);
+                return RedirectToPage("/Index");
             }
             return RedirectToPage("/Index", new { id = todoList.TodoCatId });
         }
 
+        /// <summary>
+        /// Get all todos of todo category. It requires catId from query param
+        /// </summary>
+        /// <returns></returns>
         public IActionResult OnGetTodoList()
         {
             var catIdStr = Request.Query["catId"];
@@ -86,6 +110,10 @@ namespace TodoApplication.Pages
             return new JsonResult(new ResponseMessage(200, "Get todo list successfully", todoList));
         }
 
+        /// <summary>
+        /// Handle post method from client for add new todo category. It requires catName in formdata 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult OnPostAddNewCategory()
         {
@@ -109,15 +137,28 @@ namespace TodoApplication.Pages
             return new JsonResult(new ResponseMessage(200, "Added successfully", newCat));
         }
 
+        /// <summary>
+        /// Handle post method from client for set "complete" status of the todo from client.
+        /// </summary>
+        /// <param name="todo"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult OnPostUpdateTodo([FromForm] UpdateTodoViewModel todo)
         {
-            var todoId = todo.ID;
-            var complete = todo.Complete;
-            _todoListServices.UpdateTodo(todoId, complete);
-            return new JsonResult(new ResponseMessage(200, "Update successfully", todo));
+            if (todo != null)
+            {
+                var todoId = todo.ID;
+                var complete = todo.Complete;
+                _todoListServices.UpdateTodo(todoId, complete);
+                return new JsonResult(new ResponseMessage(200, "Update successfully", todo));
+            }
+            return new JsonResult(new ResponseMessage(500, "Update failed", todo));
         }
 
+        /// <summary>
+        /// Handle AddNewDo from client. This handler requires 2 params: catId and todoName
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult OnPostAddNewTodo()
         {
@@ -139,14 +180,22 @@ namespace TodoApplication.Pages
             return new JsonResult(new ResponseMessage(200, "Added successfully", newTodo));
         }
 
-        private void removeDoneTodos(List<int> todoIdList)
+        /// <summary>
+        /// This function is used for remove the list of todo
+        /// </summary>
+        /// <param name="todoIdList"></param>
+        private void RemoveDoneTodos(List<int> todoIdList)
         {
             foreach (var item in todoIdList)
             {
                 _todoListServices.DeleteTodo(item);
             }
         }
-
+        /// <summary>
+        /// This function is used for parse todoCat from string to int
+        /// </summary>
+        /// <param name="catId"></param>
+        /// <returns></returns>
         private int ParseTodoCatId(string catId)
         {
             var id = 0;
@@ -161,6 +210,12 @@ namespace TodoApplication.Pages
             return id;
         }
 
+        /// <summary>
+        /// Validate the information when adding new todo
+        /// </summary>
+        /// <param name="catId"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private bool IsAddNewTodoValid(string catId, string name)
         {
             try

@@ -75,7 +75,7 @@ body {
     font-size: 1.5rem;
     color: var(--clr-light);
     display: grid;
-    grid: "header header header header" auto "...... lists active ......" auto / 0 minmax(100px, 300px) minmax(250px, 500px) 0
+    grid: "header header header header" auto "...... lists active ......" auto / 1fr minmax(100px, 300px) minmax(250px, 500px) 1fr
 }
 
 .title {
@@ -91,6 +91,8 @@ body {
     font-size: 1.2rem;
     line-height: 1.7;
     list-style: circle;
+    text-transform: capitalize;
+    padding-left: 1.1rem;
 }
 
 .list-name {
@@ -98,11 +100,11 @@ body {
     color: inherit;
 }
 
-.list-name:hover {
-    opacity: .7;
-    color: inherit;
-    text-decoration-line: none;
-}
+    .list-name:hover {
+        opacity: .7;
+        color: inherit;
+        text-decoration-line: none;
+    }
 
 .active-list {
     font-weight: 700;
@@ -184,6 +186,7 @@ btn.delete {
     grid-area: active;
     background: var(--clr-light);
     color: var(--clr-dark);
+    position: relative;
 }
 
 .todo-header {
@@ -293,6 +296,6 @@ btn.delete {
     position: absolute;
     width: 100%;
     left: 0;
-    bottom: -30px;
-    color: var(--clr-light);
+    bottom: 0px;
+    color: var(--clr-dark);
 }

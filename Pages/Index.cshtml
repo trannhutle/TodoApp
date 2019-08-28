@@ -6,10 +6,6 @@
 }
 
 <div class="wrapper">
-
-    <h1 class="title">
-        Todo list application
-    </h1>
     @await Component.InvokeAsync("TodoCategories", Model.ID)
     @await Component.InvokeAsync("TodoList", Model.ID)
 </div>

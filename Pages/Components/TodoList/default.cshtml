@@ -6,7 +6,7 @@
         <p class="tast-count" data-remaining-todo>
             @if (Model.TodoList.Count() > 0)
             {
-                @:Remaining tasks @Model.TodoList.Count()
+                @:Remaining tasks @Model.RemainingTasks
             }
         </p>
     </div>
@@ -25,15 +25,23 @@
                 }
             </div>
             <div class="new-task-creator">
+                <button type="button" class="btn create" arial-label="Create new task" data-add-new-todo>+</button>
                 <input type="text" class="new task" placeholder="new task name"
                        aria-label="new task name" data-new-todo-name data-cur-cat-id="@Model.TodoCatId">
-                <button type="button" class="btn create" arial-label="Create new task" data-add-new-todo>+</button>
-            </div>
-            <div class="delete-stuff">
-                <input type="submit" class="btn delete" name="removeDone" value="Clear complete tasks" />
-                <input type="submit" class="btn delete" name="removeList" value="Delete list" />
             </div>
             <input type="hidden" name="TodoCatId" value="@Model.TodoCatId">
+        </div>
+        <div class="delete-stuff" data-delete-stuff>
+
+            @if (Model.TodoList.Count() > 0)
+            {
+                <input type="submit" class="btn delete" name="removeDone" value="Clear complete tasks" />
+                <input type="submit" class="btn delete" name="removeAllTodoList" value="Clear all task" />
+            }
+            else
+            {
+                <input type="submit" class="btn delete" name="removeList" value="Remove list" />
+            }
         </div>
     </form>
 </div>
@@ -44,4 +52,8 @@
             <span class="custom-checkbox"></span>
         </label>
     </div>
+</template>
+<template id="delete-stuff-template">
+    <input type="submit" class="btn delete" name="removeDone" value="Clear complete tasks" />
+    <input type="submit" class="btn delete" name="removeAllTodoList" value="Clear all task" />
 </template>

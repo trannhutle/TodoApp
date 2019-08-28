@@ -13,5 +13,6 @@ namespace TodoApplication.Services
         Todo AddNewTodo(Todo todoCategory);
         void DeleteTodo(int todoId);
         void UpdateTodo(int todoId, bool complete);
+        void DeleteTodoByCatId(int selectedCatId);
     }
 }
