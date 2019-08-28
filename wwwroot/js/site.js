@@ -17,7 +17,11 @@ const TODO_CAT_ID_PREFIX = "todo-cat-id-"
 addNewCat.addEventListener("click", e => {
     e.preventDefault();
     const catName = newCatName.value;
-    if (catName == null || catName === "") {
+    if (catName == null || catName.trim() === "") {
+        return
+    }
+    if (catName.trim().length > 20) {
+        alert("Todo category is not over 20 character")
         return
     }
     addTodoCategory(catName)
@@ -27,11 +31,14 @@ addNewTodo.addEventListener("click", e => {
     e.preventDefault()
     const todoName = newTodoName.value;
     const curTodoCatId = newTodoName.dataset.curCatId
-    if (todoName == null || todoName === "") {
+    if (todoName == null || todoName.trim() === "") {
+        return
+    }
+    if (todoName.trim().length > 100) {
+        alert("Todo is not over than 100 character")
         return
     }
     addTodo(todoName, curTodoCatId)
-    
 })
 
 // reset input boxes
@@ -84,7 +91,7 @@ function addTodo(name, todoCatId) {
         if (statusCode === successCode) {
             clearInput()
             //Get new todo list
-            getTodoList(curTodoCatId)
+            getTodoList()
         } else {
             alert("Could not add new todo category");
         }
@@ -94,7 +101,8 @@ function addTodo(name, todoCatId) {
 }
 
 // Get to do list of todo category
-function getTodoList(todoCatId) {
+function getTodoList() {
+    const catId = newTodoName.dataset.curCatId
     $.ajax({
         beforeSend: function (xhr) {
             xhr.setRequestHeader("XSRF-TOKEN",
@@ -103,11 +111,11 @@ function getTodoList(todoCatId) {
         method: "GET",
         url: "/Index?handler=TodoList",
         data: {
-            "catId": todoCatId
+            "catId": catId
         },
     }).done((result) => {
         const statusCode = result.statusCode;
-        
+
         if (statusCode === successCode) {
             const todoList = result.data
             renderTodoList(todoList)

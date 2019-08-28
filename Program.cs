@@ -16,10 +16,10 @@ namespace TodoApplication
         {
             CreateWebHostBuilder(args).Build().Run();
         }
-
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>().ConfigureLogging(logging => {
+                .UseStartup<Startup>().ConfigureLogging(logging =>
+                {
                     logging.ClearProviders();
                     logging.AddConsole();
                 });

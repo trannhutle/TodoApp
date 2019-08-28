@@ -2,21 +2,25 @@
 <div class="todo-list">
     <div class="todo-header">
         <h2 class="list-title">@Model.TodoCatName</h2>
-        <p class="tast-count">@Model.TodoList.Count()</p>
+        <p class="tast-count">
+            @if (Model.TodoList.Count() > 0)
+            {
+                @:Remaining tasks @Model.TodoList.Count()
+            }
+        </p>
     </div>
     <div class="todo-body">
         <div class="tasks" data-todo-list-container>
             @foreach (var item in Model.TodoList)
             {
                 <div class="task">
-                    <input type="checkbox" id="task-1" />
-                    <label for="task-1">
+                    <input type="checkbox" id="task-@item.ID" />
+                    <label for="task-@item.ID">
                         <span class="custom-checkbox"></span>
                         @item.Name
                     </label>
                 </div>
             }
-            
         </div>
         <div class="new-task-creator">
             <form method="post">
@@ -29,13 +33,14 @@
             <button class="btn delete">Clear complete tasks</button>
             <button class="btn delete">Delete list</button>
         </div>
-        <template id="todo-template">
-            <div class="task">
-                <input type="checkbox" />
-                <label>
-                    <span class="custom-checkbox"></span>
-                </label>
-            </div>
-        </template>
+
     </div>
 </div>
+<template id="todo-template">
+    <div class="task">
+        <input type="checkbox" />
+        <label>
+            <span class="custom-checkbox"></span>
+        </label>
+    </div>
+</template>
