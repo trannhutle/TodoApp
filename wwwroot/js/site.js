@@ -10,9 +10,12 @@ const addNewTodo = document.querySelector("[data-add-new-todo]")
 const newTodoName = document.querySelector("[data-new-todo-name]")
 const todoTemplate = document.getElementById("todo-template")
 const todoListContainer = document.querySelector("[data-todo-list-container]")
+const remainingTodo = document.querySelector("[data-remaining-todo]")
 
 const successCode = 200
 const TODO_CAT_ID_PREFIX = "todo-cat-id-"
+const REMAINING_TEXT = "Remaining tasks"
+
 
 addNewCat.addEventListener("click", e => {
     e.preventDefault();
@@ -29,17 +32,27 @@ addNewCat.addEventListener("click", e => {
 
 addNewTodo.addEventListener("click", e => {
     e.preventDefault()
-    const todoName = newTodoName.value;
-    const curTodoCatId = newTodoName.dataset.curCatId
-    if (todoName == null || todoName.trim() === "") {
-        return
+    if (isTodoValid()) {
+        addTodo()
     }
-    if (todoName.trim().length > 100) {
-        alert("Todo is not over than 100 character")
-        return
-    }
-    addTodo(todoName, curTodoCatId)
 })
+
+newTodoName.addEventListener("keypress", e => {
+    const code = (e.keyCode ? e.keyCode : e.which);
+    if (code == 13) {
+        addNewTodo.click()
+    }
+})
+
+todoListContainer.addEventListener("click", e => {
+    if (e.target.tagName.toLowerCase() == "input") {
+        const selectedTask = e.target.value
+        const complete = e.target.checked
+        updateTodo(selectedTask, complete)
+    }
+})
+
+
 
 // reset input boxes
 function clearInput() {
@@ -73,7 +86,21 @@ function addTodoCategory(name) {
     })
 }
 
-function addTodo(name, todoCatId) {
+function isTodoValid() {
+    const todoName = newTodoName.value;
+    if (todoName == null || todoName.trim() === "") {
+        return false
+    }
+    if (todoName.trim().length > 100) {
+        alert("Todo is not over than 100 character")
+        return false
+    }
+    return true
+}
+
+function addTodo() {
+    const name = newTodoName.value;
+    const todoCatId = newTodoName.dataset.curCatId
     // Send the request to back-end
     $.ajax({
         beforeSend: function (xhr) {
@@ -100,6 +127,31 @@ function addTodo(name, todoCatId) {
     })
 }
 
+function updateTodo(todoId, complete) {
+
+    const t = { ID: parseInt(todoId), Complete: complete }
+
+    $.ajax({
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("XSRF-TOKEN",
+                $('input:hidden[name="__RequestVerificationToken"]').val());
+        },
+        method: "POST",
+        url: "/Index?handler=UpdateTodo",
+        type: "application/json",
+        data: t,
+    }).done((result) => {
+        const statusCode = result.statusCode;
+        if (statusCode === successCode) {
+            console.log("update successfully")
+        } else {
+            alert("Could not add new todo category");
+        }
+    }).fail((result) => {
+        alert("Could not add new todo category");
+    })
+}
+
 // Get to do list of todo category
 function getTodoList() {
     const catId = newTodoName.dataset.curCatId
@@ -118,6 +170,8 @@ function getTodoList() {
 
         if (statusCode === successCode) {
             const todoList = result.data
+            clearElement(todoListContainer)
+            updateRemainingTodo(todoList)
             renderTodoList(todoList)
         } else {
             alert("Could not add new todo category");
@@ -147,4 +201,18 @@ function renderTodoCatList(todoCat) {
     newTodoCatElement.classList.add("list-name")
     newTodoCatElement.innerText = todoCat.name
     todoCatList.appendChild(newTodoCatElement)
+}
+
+function updateRemainingTodo(todoList) {
+    if (todoList && todoList.length > 0) {
+        remainingTodo.innerText = REMAINING_TEXT + " " + todoList.length
+    } else {
+        remainingTodo.innerText = ""
+    }
+}
+
+function clearElement(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild)
+    }
 }

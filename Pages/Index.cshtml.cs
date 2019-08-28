@@ -11,6 +11,7 @@ using TodoApplication.DataObjects;
 using System.IO;
 using TodoApplication.Services;
 using Microsoft.Extensions.Logging;
+using TodoApplication.ViewModels;
 
 namespace TodoApplication.Pages
 {
@@ -25,9 +26,8 @@ namespace TodoApplication.Pages
         {
             _todoCatServices = todoCatServices;
             _todoListServices = todoListServices;
-            _logger = logger;
+             _logger = logger;
         }
-
         public List<TodoCategory> TodoCats { get; set; } = new List<TodoCategory>();
 
         public int ID { get; set; } = 0;
@@ -58,6 +58,23 @@ namespace TodoApplication.Pages
                 return RedirectToPage("./Error");
             }
             return Page();
+        }
+
+        [HttpPost]
+        public IActionResult OnPostDeleteTodo(TodoViewModel todoList, string removeDone, string removeList)
+        {
+            if (!string.IsNullOrEmpty(removeDone))
+            {
+                if (todoList != null && todoList.SelectedTodos != null)
+                {
+                    removeDoneTodos(todoList.SelectedTodos);
+                }
+            }
+            else if (!string.IsNullOrEmpty(removeList))
+            {
+
+            }
+            return RedirectToPage("/Index", new { id = todoList.TodoCatId });
         }
 
         public IActionResult OnGetTodoList()
@@ -93,6 +110,15 @@ namespace TodoApplication.Pages
         }
 
         [HttpPost]
+        public IActionResult OnPostUpdateTodo([FromForm] UpdateTodoViewModel todo)
+        {
+            var todoId = todo.ID;
+            var complete = todo.Complete;
+            _todoListServices.UpdateTodo(todoId, complete);
+            return new JsonResult(new ResponseMessage(200, "Update successfully", todo));
+        }
+
+        [HttpPost]
         public IActionResult OnPostAddNewTodo()
         {
             var catId = Request.Form["catId"];
@@ -113,6 +139,13 @@ namespace TodoApplication.Pages
             return new JsonResult(new ResponseMessage(200, "Added successfully", newTodo));
         }
 
+        private void removeDoneTodos(List<int> todoIdList)
+        {
+            foreach (var item in todoIdList)
+            {
+                _todoListServices.DeleteTodo(item);
+            }
+        }
 
         private int ParseTodoCatId(string catId)
         {
@@ -127,6 +160,7 @@ namespace TodoApplication.Pages
             }
             return id;
         }
+
         private bool IsAddNewTodoValid(string catId, string name)
         {
             try

@@ -1,40 +1,41 @@
 ﻿@model TodoApplication.ViewModels.TodoListViewModel
+
 <div class="todo-list">
     <div class="todo-header">
         <h2 class="list-title">@Model.TodoCatName</h2>
-        <p class="tast-count">
+        <p class="tast-count" data-remaining-todo>
             @if (Model.TodoList.Count() > 0)
             {
                 @:Remaining tasks @Model.TodoList.Count()
             }
         </p>
     </div>
-    <div class="todo-body">
-        <div class="tasks" data-todo-list-container>
-            @foreach (var item in Model.TodoList)
-            {
-                <div class="task">
-                    <input type="checkbox" id="task-@item.ID" />
-                    <label for="task-@item.ID">
-                        <span class="custom-checkbox"></span>
-                        @item.Name
-                    </label>
-                </div>
-            }
-        </div>
-        <div class="new-task-creator">
-            <form method="post">
+    <form method="POST" asp-page-handler="DeleteTodo">
+        <div class="todo-body">
+            <div class="tasks" data-todo-list-container>
+                @foreach (var item in Model.TodoList)
+                {
+                    <div class="task">
+                        <input type="checkbox" name="SelectedTodos" value="@item.ID" checked="@item.Complete" id="task-@item.ID" />
+                        <label for="task-@item.ID">
+                            <span class="custom-checkbox"></span>
+                            @item.Name
+                        </label>
+                    </div>
+                }
+            </div>
+            <div class="new-task-creator">
                 <input type="text" class="new task" placeholder="new task name"
                        aria-label="new task name" data-new-todo-name data-cur-cat-id="@Model.TodoCatId">
-                <button class="btn create" arial-label="Create new task" data-add-new-todo>+</button>
-            </form>
+                <button type="button" class="btn create" arial-label="Create new task" data-add-new-todo>+</button>
+            </div>
+            <div class="delete-stuff">
+                <input type="submit" class="btn delete" name="removeDone" value="Clear complete tasks" />
+                <input type="submit" class="btn delete" name="removeList" value="Delete list" />
+            </div>
+            <input type="hidden" name="TodoCatId" value="@Model.TodoCatId">
         </div>
-        <div class="delete-stuff">
-            <button class="btn delete">Clear complete tasks</button>
-            <button class="btn delete">Delete list</button>
-        </div>
-
-    </div>
+    </form>
 </div>
 <template id="todo-template">
     <div class="task">

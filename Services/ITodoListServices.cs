@@ -9,10 +9,9 @@ namespace TodoApplication.Services
     public interface ITodoListServices
     {
         Task<List<Todo>> GetTodoListAsync(int selectedCatId);
-
         List<Todo> GetTodoList(int selectedCatId);
-
         Todo AddNewTodo(Todo todoCategory);
-
+        void DeleteTodo(int todoId);
+        void UpdateTodo(int todoId, bool complete);
     }
 }

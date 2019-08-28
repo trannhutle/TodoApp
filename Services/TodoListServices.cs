@@ -24,6 +24,27 @@ namespace TodoApplication.Services
             return todo;
         }
 
+        public void DeleteTodo(int todoId)
+        {
+            var todo = db.Todos.Find((long)todoId);
+            if (todo != null)
+            {
+                db.Todos.Remove(todo);
+                db.SaveChanges();
+            }
+        }
+        public void UpdateTodo(int todoId, bool compete)
+        {
+            var todo = db.Todos.Find((long)todoId);
+            if (todo != null)
+            {
+                todo.Complete = compete;
+                todo.UpdateDate = DateTime.Now.Ticks;
+                db.Todos.Update(todo);
+                db.SaveChanges();
+            }
+        }
+
         public List<Todo> GetTodoList(int selectedCatId)
         {
             var todoList = this.db.Todos.Where(x => x.CatID == selectedCatId).ToList();
